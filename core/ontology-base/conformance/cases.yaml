@@ -1,0 +1,279 @@
+# Ontology file conformance cases — language-neutral, read by every engine that reads ontology files.
+#
+# Each case is one or more files, merged in order, and what two levels must say about them:
+#   schema   valid | invalid    each file on its own, checked against schema/ontology-file.schema.json
+#   kernel   valid | invalid    the whole set, read and defined the way the kernel does
+#                               (merge files → resolve value types → define every entity, then every relationship)
+#   code     the kernel's error code when it refuses (OntologyError.code); absent when the refusal has no code
+#
+# A file is given either as `content` (a mapping; the runner writes it in the format its name says: .yaml/.yml
+# or .json) or as `text` (written byte for byte — for what only YAML can say: anchors, comments, an empty file).
+# An empty file is an empty mapping.
+#
+# An engine conforms when it agrees with `kernel` on every case. A validator conforms when it agrees with `schema`.
+version: 1
+cases:
+
+  # ── Accepted ─────────────────────────────────────────────────────────────────────────────────
+
+  - id: minimal-yaml
+    about: One entity, one relationship, in YAML.
+    files:
+      - name: ontology.yaml
+        content:
+          entities:
+            - name: Customer
+              label: Customer
+              properties:
+                - { name: fullName, type: text, required: true, maxLength: 200 }
+                - { name: tier, type: enum, enumValues: [gold, silver] }
+            - name: Order
+              label: Order
+              properties:
+                - { name: amount, type: number, minimum: 0, multipleOf: 0.01 }
+                - { name: placedOn, type: date, formatMinimum: '2000-01-01' }
+          relationships:
+            - { name: placedBy, from: Order, to: Customer, cardinality: N..1, directed: true }
+    expect: { schema: valid, kernel: valid }
+
+  - id: minimal-json
+    about: The same ontology written as JSON — JSON is YAML, one parser reads both.
+    files:
+      - name: ontology.json
+        content:
+          entities:
+            - name: Customer
+              label: Customer
+              properties:
+                - { name: fullName, type: text, required: true, maxLength: 200 }
+          relationships: []
+    expect: { schema: valid, kernel: valid }
+
+  - id: yaml-anchors-and-comments
+    about: >-
+      YAML anchors and comments — a property written once and reused. Plain anchors and aliases only:
+      the `<<` merge key is YAML 1.1, not 1.2, and not every engine's YAML reader has it.
+    files:
+      - name: ontology.yaml
+        text: |
+          # yaml-language-server: $schema=../schema/ontology-file.schema.json
+          entities:
+            - name: Invoice
+              label: Invoice
+              properties:
+                - &total { name: total, type: number, minimum: 0, multipleOf: 0.01 }
+            - name: Quote
+              label: Quote
+              properties:
+                - *total   # the same declaration, not a copy that can drift
+    expect: { schema: valid, kernel: valid }
+
+  - id: empty-file
+    about: An empty file declares nothing and is not an error.
+    files:
+      - { name: empty.yaml, text: '' }
+      - name: ontology.yaml
+        content:
+          entities: [{ name: Thing, label: Thing, properties: [] }]
+    expect: { schema: valid, kernel: valid }
+
+  - id: many-files-yaml-and-json
+    about: An ontology spread over files of both formats; a relationship may name an entity from another file.
+    files:
+      - name: people.yaml
+        content:
+          entities: [{ name: Person, label: Person, properties: [{ name: name, type: text }] }]
+      - name: places.json
+        content:
+          entities: [{ name: Place, label: Place, properties: [{ name: name, type: text }] }]
+          relationships: [{ name: livesIn, from: Person, to: Place, cardinality: N..1, directed: true }]
+    expect: { schema: valid, kernel: valid }
+
+  - id: project-keys-ignored
+    about: Keys a project adds — at the top, on an entity, a property, a relationship — are kept and ignored.
+    files:
+      - name: ontology.yaml
+        content:
+          accepted: [{ rule: r1, why: reviewed }]
+          entities:
+            - name: Case
+              label: Case
+              labels: { vi: Hồ sơ }
+              visibility: staff
+              properties:
+                - { name: status, type: enum, enumValues: [open, closed], offScreen: true, deprecated: false }
+          relationships:
+            - { name: parentOf, from: Case, to: Case, cardinality: 1..N, directed: true, kind: composition }
+    expect: { schema: valid, kernel: valid }
+
+  - id: value-types
+    about: A value type declared once and used by name; the property may narrow it.
+    files:
+      - name: ontology.yaml
+        content:
+          valueTypes:
+            - { name: money, type: number, minimum: 0, multipleOf: 0.01 }
+            - { name: code, type: text, maxLength: 50, pattern: '[A-Z0-9_]+' }
+            - { name: scan, type: file, accept: [application/pdf, 'image/*', .png], maxBytes: 10485760 }
+          entities:
+            - name: Payment
+              label: Payment
+              properties:
+                - { name: amount, type: number, valueType: money }
+                - { name: ref, type: text, valueType: code, maxLength: 12 }
+                - { name: receipt, type: file, valueType: scan }
+    expect: { schema: valid, kernel: valid }
+
+  - id: every-property-type
+    about: Each of the ten property types, with the keywords that apply to it.
+    files:
+      - name: ontology.yaml
+        content:
+          entities:
+            - name: Sample
+              label: Sample
+              properties:
+                - { name: t, type: text, minLength: 1, maxLength: 10, pattern: '[a-z]+' }
+                - { name: n, type: number, exclusiveMinimum: 0, exclusiveMaximum: 100 }
+                - { name: d, type: date, formatMinimum: '1900-01-01', formatMaximum: '2100-12-31' }
+                - { name: dt, type: datetime, formatMinimum: '2000-01-01T00:00:00Z' }
+                - { name: e, type: enum, enumValues: [a, b] }
+                - { name: u, type: uuid }
+                - { name: j, type: json, maxLength: 10000 }
+                - { name: tags, type: 'text[]', minItems: 0, maxItems: 20, maxLength: 30 }
+                - { name: scan, type: file, accept: [.pdf], maxBytes: 1000 }
+                - { name: rank, type: catalogue, catalogue: ranks }
+    expect: { schema: valid, kernel: valid }
+
+  # ── Refused by both: the schema already says no ──────────────────────────────────────────────
+
+  - id: unknown-property-type
+    files: [{ name: o.yaml, content: { entities: [{ name: A, label: A, properties: [{ name: x, type: string }] }] } }]
+    expect: { schema: invalid, kernel: invalid, code: UNKNOWN_PROPERTY }
+
+  - id: enum-without-values
+    files: [{ name: o.yaml, content: { entities: [{ name: A, label: A, properties: [{ name: x, type: enum }] }] } }]
+    expect: { schema: invalid, kernel: invalid, code: ENUM_VALUE_INVALID }
+
+  - id: catalogue-without-collection
+    files: [{ name: o.yaml, content: { entities: [{ name: A, label: A, properties: [{ name: x, type: catalogue }] }] } }]
+    expect: { schema: invalid, kernel: invalid, code: ENUM_VALUE_INVALID }
+
+  - id: unsafe-entity-name
+    about: A name becomes a storage identifier; only a letter then letters, digits or _.
+    files: [{ name: o.yaml, content: { entities: [{ name: order-line, label: Order line, properties: [] }] } }]
+    expect: { schema: invalid, kernel: invalid, code: INVALID_NAME }
+
+  - id: unsafe-property-name
+    files: [{ name: o.yaml, content: { entities: [{ name: A, label: A, properties: [{ name: 2nd, type: text }] }] } }]
+    expect: { schema: invalid, kernel: invalid, code: INVALID_NAME }
+
+  - id: provenance-field-declared
+    about: id, source_ref, confirmed_by, confirmed_at are added by the kernel; declaring one is refused.
+    files: [{ name: o.yaml, content: { entities: [{ name: A, label: A, properties: [{ name: id, type: uuid }] }] } }]
+    expect: { schema: invalid, kernel: invalid, code: PROVENANCE_FIELD_REDECLARED }
+
+  - id: missing-label
+    files: [{ name: o.yaml, content: { entities: [{ name: A, properties: [] }] } }]
+    expect: { schema: invalid, kernel: invalid, code: REQUIRED_PROPERTY_MISSING }
+
+  - id: blank-label
+    files: [{ name: o.yaml, content: { entities: [{ name: A, label: '  ', properties: [] }] } }]
+    expect: { schema: invalid, kernel: invalid, code: REQUIRED_PROPERTY_MISSING }
+
+  - id: keyword-on-wrong-type
+    about: maxLength means nothing on a number — refused, not ignored.
+    files: [{ name: o.yaml, content: { entities: [{ name: A, label: A, properties: [{ name: x, type: number, maxLength: 5 }] }] } }]
+    expect: { schema: invalid, kernel: invalid, code: INVALID_CONSTRAINT }
+
+  - id: negative-length
+    files: [{ name: o.yaml, content: { entities: [{ name: A, label: A, properties: [{ name: x, type: text, maxLength: -1 }] }] } }]
+    expect: { schema: invalid, kernel: invalid, code: INVALID_CONSTRAINT }
+
+  - id: zero-multiple-of
+    files: [{ name: o.yaml, content: { entities: [{ name: A, label: A, properties: [{ name: x, type: number, multipleOf: 0 }] }] } }]
+    expect: { schema: invalid, kernel: invalid, code: INVALID_CONSTRAINT }
+
+  - id: date-bound-wrong-form
+    files: [{ name: o.yaml, content: { entities: [{ name: A, label: A, properties: [{ name: x, type: date, formatMinimum: 01/01/1900 }] }] } }]
+    expect: { schema: invalid, kernel: invalid, code: INVALID_CONSTRAINT }
+
+  - id: accept-wrong-form
+    files: [{ name: o.yaml, content: { entities: [{ name: A, label: A, properties: [{ name: x, type: file, accept: [pdf] }] }] } }]
+    expect: { schema: invalid, kernel: invalid, code: INVALID_CONSTRAINT }
+
+  - id: bad-cardinality
+    files:
+      - name: o.yaml
+        content:
+          entities: [{ name: A, label: A, properties: [] }]
+          relationships: [{ name: r, from: A, to: A, cardinality: one-to-many, directed: true }]
+    expect: { schema: invalid, kernel: invalid, code: TYPE_MISMATCH }
+
+  # ── Refused by the kernel only: beyond what JSON Schema can say ─────────────────────────────
+
+  - id: entity-declared-in-two-files
+    about: An entity name is a system-wide key; a second declaration is an error, not an override.
+    files:
+      - { name: a.yaml, content: { entities: [{ name: A, label: A, properties: [] }] } }
+      - { name: b.json, content: { entities: [{ name: A, label: A again, properties: [] }] } }
+    expect: { schema: valid, kernel: invalid }
+
+  - id: relationship-declared-in-two-files
+    files:
+      - name: a.yaml
+        content:
+          entities: [{ name: A, label: A, properties: [] }]
+          relationships: [{ name: r, from: A, to: A, cardinality: 1..N, directed: true }]
+      - { name: b.yaml, content: { relationships: [{ name: r, from: A, to: A, cardinality: 1..1, directed: true }] } }
+    expect: { schema: valid, kernel: invalid }
+
+  - id: property-declared-twice
+    files: [{ name: o.yaml, content: { entities: [{ name: A, label: A, properties: [{ name: x, type: text }, { name: x, type: number }] }] } }]
+    expect: { schema: valid, kernel: invalid, code: PROVENANCE_FIELD_REDECLARED }
+
+  - id: relationship-to-unknown-entity
+    files:
+      - name: o.yaml
+        content:
+          entities: [{ name: A, label: A, properties: [] }]
+          relationships: [{ name: r, from: A, to: Missing, cardinality: N..1, directed: true }]
+    expect: { schema: valid, kernel: invalid, code: UNKNOWN_ENTITY_TYPE }
+
+  - id: unknown-value-type
+    files: [{ name: o.yaml, content: { entities: [{ name: A, label: A, properties: [{ name: x, type: number, valueType: money }] }] } }]
+    expect: { schema: valid, kernel: invalid, code: INVALID_CONSTRAINT }
+
+  - id: value-type-of-another-type
+    files:
+      - name: o.yaml
+        content:
+          valueTypes: [{ name: money, type: number, minimum: 0 }]
+          entities: [{ name: A, label: A, properties: [{ name: x, type: text, valueType: money }] }]
+    expect: { schema: valid, kernel: invalid, code: INVALID_CONSTRAINT }
+
+  - id: value-type-declared-twice
+    files:
+      - name: o.yaml
+        content:
+          valueTypes: [{ name: money, type: number }, { name: money, type: number }]
+          entities: [{ name: A, label: A, properties: [{ name: x, type: number, valueType: money }] }]
+    expect: { schema: valid, kernel: invalid, code: INVALID_CONSTRAINT }
+
+  - id: lower-bound-above-upper
+    files: [{ name: o.yaml, content: { entities: [{ name: A, label: A, properties: [{ name: x, type: number, minimum: 10, maximum: 1 }] }] } }]
+    expect: { schema: valid, kernel: invalid, code: INVALID_CONSTRAINT }
+
+  - id: pattern-broken-in-browser
+    about: Compiles as an ECMAScript regex but not with flag v, which a browser uses — the box would take anything.
+    files: [{ name: o.yaml, content: { entities: [{ name: A, label: A, properties: [{ name: x, type: text, pattern: '[a-z/]+' }] }] } }]
+    expect: { schema: valid, kernel: invalid, code: INVALID_CONSTRAINT }
+
+  - id: relationship-without-direction
+    about: A relationship must say whether it is directed; left out, it used to read as undirected without a word.
+    files:
+      - name: o.yaml
+        content:
+          entities: [{ name: A, label: A, properties: [] }]
+          relationships: [{ name: r, from: A, to: A, cardinality: N..1 }]
+    expect: { schema: invalid, kernel: invalid, code: TYPE_MISMATCH }

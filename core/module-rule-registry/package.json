@@ -1,0 +1,41 @@
+{
+  "name": "@dqa-ai-solutions/module-rule-registry",
+  "version": "5.7.3",
+  "description": "Rule governance: scope (firm/client) + template + versioning + subscription; resolve(client, asOf) → merged rule-set + run manifest. Domain-agnostic and fact-blind: it stores and resolves rules but never evaluates them.",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DQASolutions/core-runtime.git",
+    "directory": "core/module-rule-registry"
+  },
+  "homepage": "https://github.com/DQASolutions/core-runtime#readme",
+  "bugs": {
+    "url": "https://github.com/DQASolutions/core-runtime/issues"
+  },
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "migrations"
+  ],
+  "scripts": {
+    "build": "tsc -p .",
+    "test": "vitest run",
+    "lint": "tsc --noEmit && tsc -p tsconfig.check.json",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@types/node": "^25.3.5",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.18"
+  },
+  "private": true
+}

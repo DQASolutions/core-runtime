@@ -1,0 +1,21 @@
+{
+  "name": "@dqa-ai-solutions/example-accounting-audit",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Dogfood example — drives the @dqa-ai-solutions/core-runtime public surface end-to-end, modelling an accounting-audit workflow.",
+  "type": "module",
+  "scripts": {
+    "start": "node main.ts",
+    "test": "node main.ts",
+    "lint": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@dqa-ai-solutions/core-runtime": "*",
+    "pg": "^8.13.1"
+  },
+  "devDependencies": {
+    "@types/node": "^25.3.5",
+    "@types/pg": "^8.11.10",
+    "typescript": "^5.9.3"
+  }
+}

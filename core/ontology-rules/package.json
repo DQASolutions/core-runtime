@@ -1,0 +1,44 @@
+{
+  "name": "@dqa-ai-solutions/ontology-rules",
+  "version": "0.1.0",
+  "description": "The rule language: core operations, rules-as-data interpreter (eval-expr), rule schema, fn/rule/action specs, function loader, rule and ontology validation.",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DQASolutions/core-runtime.git",
+    "directory": "core/ontology-rules"
+  },
+  "homepage": "https://github.com/DQASolutions/core-runtime#readme",
+  "bugs": {
+    "url": "https://github.com/DQASolutions/core-runtime/issues"
+  },
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p .",
+    "test": "vitest run",
+    "lint": "tsc --noEmit && tsc -p tsconfig.check.json",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@dqa-ai-solutions/ontology-sdk": "^5.14.0",
+    "fs-extra": "^11.3.4"
+  },
+  "devDependencies": {
+    "@types/node": "^25.3.5",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.18",
+    "@types/fs-extra": "^11.0.4"
+  },
+  "private": true
+}

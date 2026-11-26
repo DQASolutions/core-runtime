@@ -1,0 +1,60 @@
+{
+  "name": "@dqa-ai-solutions/core-runtime",
+  "version": "0.1.0",
+  "description": "The core tier in one package: ontology SDK, rule language, pack loaders, storage builders, governance, rule registry. Declarations alone at ./ontology-base.",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DQASolutions/core-runtime.git",
+    "directory": "core/core-runtime"
+  },
+  "homepage": "https://github.com/DQASolutions/core-runtime#readme",
+  "bugs": {
+    "url": "https://github.com/DQASolutions/core-runtime/issues"
+  },
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./input": {
+      "types": "./dist/input.d.ts",
+      "import": "./dist/input.js"
+    },
+    "./ontology-base": {
+      "types": "./dist/ontology-base.d.ts",
+      "import": "./dist/ontology-base.js"
+    },
+    "./ontology-base/schema/ontology-file.schema.json": "./dist/ontology-base/schema/ontology-file.schema.json",
+    "./ontology-base/schema/ontology-file.schema.yaml": "./dist/ontology-base/schema/ontology-file.schema.yaml",
+    "./ontology-base/conformance/cases.yaml": "./dist/ontology-base/conformance/cases.yaml",
+    "./rule-registry/migrations/*": "./dist/rule-registry/migrations/*",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p . && node ../../scripts/copy-assets.mjs core-runtime",
+    "test": "vitest run --passWithNoTests",
+    "lint": "tsc --noEmit && tsc -p tsconfig.check.json",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@dqa-ai-solutions/ontology-base": "^0.1.0",
+    "@dqa-ai-solutions/ontology-sdk": "^5.14.2",
+    "@dqa-ai-solutions/ontology-rules": "^0.1.0",
+    "@dqa-ai-solutions/ontology-loader": "^0.1.0",
+    "@dqa-ai-solutions/ontology-storage": "^0.1.0",
+    "@dqa-ai-solutions/ontology-governance": "^5.2.1",
+    "@dqa-ai-solutions/module-rule-registry": "^5.7.3"
+  },
+  "devDependencies": {
+    "@types/node": "^25.3.5",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.18"
+  }
+}

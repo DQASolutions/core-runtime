@@ -1,0 +1,54 @@
+{
+  "name": "@dqa-ai-solutions/ontology-base",
+  "version": "0.1.0",
+  "description": "Ontology declarations only, no dependencies: value types, entity and relationship types, shared concepts, behaviour signatures — plus the ontology file format (JSON Schema, in JSON and YAML) and language-neutral conformance cases.",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DQASolutions/core-runtime.git",
+    "directory": "core/ontology-base"
+  },
+  "homepage": "https://github.com/DQASolutions/core-runtime#readme",
+  "bugs": {
+    "url": "https://github.com/DQASolutions/core-runtime/issues"
+  },
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./schema/ontology-file.schema.json": "./schema/ontology-file.schema.json",
+    "./schema/ontology-file.schema.yaml": "./schema/ontology-file.schema.yaml",
+    "./conformance/cases.yaml": "./conformance/cases.yaml",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "schema",
+    "conformance"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsup",
+    "schema": "node scripts/build-schema.mjs",
+    "test": "node scripts/build-schema.mjs --check && vitest run",
+    "lint": "tsc --noEmit && tsc -p tsconfig.check.json",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^25.3.5",
+    "ajv": "^8.18.0",
+    "js-yaml": "^4.1.1",
+    "tsup": "^8.3.5",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.18"
+  },
+  "module": "./dist/index.js",
+  "private": true
+}
