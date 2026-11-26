@@ -30,7 +30,7 @@
 // Everything async-tolerant: predicates/projections may touch `io` (graph reads),
 // so they may return a Promise; the ops await internally.
 
-import type { Instance, FunctionIO } from '@dqa-ai-solutions/ontology-sdk'
+import type { Instance, FunctionIO } from '@dqa-ai-solutions/ontology-model'
 
 export type Node = Instance
 export type NodeSet = Instance[]

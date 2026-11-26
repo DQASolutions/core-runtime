@@ -16,7 +16,7 @@
 // outside, it reads `self`. This is what makes "Σ subledger entries WHERE
 // side=debit" expressible as DATA.
 
-import type { Instance, FunctionIO, Value } from '@dqa-ai-solutions/ontology-sdk'
+import type { Instance, FunctionIO, Value } from '@dqa-ai-solutions/ontology-model'
 import * as ops from './core-ops.js'
 import { rule, type RuleSpec } from './fn.js'
 import { assertRuleIRSchema } from './rule-schema.js'

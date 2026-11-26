@@ -1,1 +1,1 @@
-export * from '@dqa-ai-solutions/ontology-sdk/input'
+export * from '@dqa-ai-solutions/ontology-model/input'

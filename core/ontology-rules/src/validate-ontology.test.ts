@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import type { Instance, FunctionIO } from '@dqa-ai-solutions/ontology-sdk'
+import type { Instance, FunctionIO } from '@dqa-ai-solutions/ontology-model'
 import { validateOntologyStructure, scoreOntologyData, reconciliationRules, type OntologyForSoundness, type OntologyData } from './validate-ontology.js'
 
 const onto: OntologyForSoundness = {

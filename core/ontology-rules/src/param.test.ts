@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import type { Instance, FunctionIO } from '@dqa-ai-solutions/ontology-sdk'
+import type { Instance, FunctionIO } from '@dqa-ai-solutions/ontology-model'
 import { ruleFromIR, paramResolver, type ExprNode } from './eval-expr.js'
 import { validateRuleSpec, buildRegistry } from './validate-rule.js'
 import { validateRuleIRSchema, RULE_SCHEMA_VERSION } from './rule-schema.js'

@@ -12,7 +12,7 @@
 // (normal TS); `compute`/`action` registration is for EXTERNAL callers (the
 // command-set CLI / a skill) reaching them by name.
 
-import type { Args, Ctx, Instance, Value, FunctionIO, ActionIO, EventSeed, GuardResult } from '@dqa-ai-solutions/ontology-sdk'
+import type { Args, Ctx, Instance, Value, FunctionIO, ActionIO, EventSeed, GuardResult } from '@dqa-ai-solutions/ontology-model'
 
 /** A named, pure computation — bound as a Function (callable by name). */
 export interface ComputeSpec {

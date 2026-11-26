@@ -1,0 +1,41 @@
+{
+  "name": "@dqa-ai-solutions/view-contract",
+  "version": "0.2.0",
+  "description": "What an app declares about a screen and the flat ViewContract a renderer receives — types and vocabulary shared by the server that resolves it and every renderer that draws it.",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DQASolutions/core-runtime.git",
+    "directory": "core/view-contract"
+  },
+  "homepage": "https://github.com/DQASolutions/core-runtime#readme",
+  "bugs": {
+    "url": "https://github.com/DQASolutions/core-runtime/issues"
+  },
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p .",
+    "test": "vitest run --passWithNoTests",
+    "lint": "tsc --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@dqa-ai-solutions/ontology-model": "^0.2.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.18"
+  },
+  "private": true
+}

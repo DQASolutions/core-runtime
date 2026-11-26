@@ -1,7 +1,7 @@
 {
   "name": "@dqa-ai-solutions/core-runtime",
-  "version": "0.1.0",
-  "description": "The core tier in one package: ontology SDK, rule language, pack loaders, storage builders, governance, rule registry. Declarations alone at ./ontology-base.",
+  "version": "0.2.0",
+  "description": "The shared core, pure and the same on every side: ontology concepts and declarations, value checks, the rule language and its interpreter, the schema surface, the view contract. No Node builtin, no driver, no I/O. The backend engine is @dqa-ai-solutions/ontology-runtime.",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
@@ -24,14 +24,21 @@
       "types": "./dist/input.d.ts",
       "import": "./dist/input.js"
     },
+    "./view": {
+      "types": "./dist/view.d.ts",
+      "import": "./dist/view.js"
+    },
     "./ontology-base": {
       "types": "./dist/ontology-base.d.ts",
       "import": "./dist/ontology-base.js"
     },
+    "./kernel": {
+      "types": "./dist/kernel.d.ts",
+      "import": "./dist/kernel.js"
+    },
     "./ontology-base/schema/ontology-file.schema.json": "./dist/ontology-base/schema/ontology-file.schema.json",
     "./ontology-base/schema/ontology-file.schema.yaml": "./dist/ontology-base/schema/ontology-file.schema.yaml",
     "./ontology-base/conformance/cases.yaml": "./dist/ontology-base/conformance/cases.yaml",
-    "./rule-registry/migrations/*": "./dist/rule-registry/migrations/*",
     "./package.json": "./package.json"
   },
   "files": [
@@ -45,12 +52,9 @@
   },
   "dependencies": {
     "@dqa-ai-solutions/ontology-base": "^0.1.0",
-    "@dqa-ai-solutions/ontology-sdk": "^5.14.2",
+    "@dqa-ai-solutions/ontology-model": "^0.2.0",
     "@dqa-ai-solutions/ontology-rules": "^0.1.0",
-    "@dqa-ai-solutions/ontology-loader": "^0.1.0",
-    "@dqa-ai-solutions/ontology-storage": "^0.1.0",
-    "@dqa-ai-solutions/ontology-governance": "^5.2.1",
-    "@dqa-ai-solutions/module-rule-registry": "^5.7.3"
+    "@dqa-ai-solutions/view-contract": "^0.2.0"
   },
   "devDependencies": {
     "@types/node": "^25.3.5",

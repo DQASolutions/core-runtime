@@ -1,13 +1,12 @@
 {
   "name": "core-runtime-workspace",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
-  "description": "Source of @dqa-ai-solutions/core-runtime. The core tier in one package: ontology SDK, rule language, pack loaders, storage builders, governance, rule registry. Declarations alone at ./ontology-base.",
+  "description": "Source of @dqa-ai-solutions/core-runtime. The shared core, pure and the same on every side: ontology concepts and declarations, value checks, the rule language and its interpreter, the schema surface, the view contract. No Node builtin, no driver, no I/O. The backend engine is @dqa-ai-solutions/ontology-runtime.",
   "license": "Apache-2.0",
   "type": "module",
   "workspaces": [
-    "core/*",
-    "examples/*"
+    "core/*"
   ],
   "scripts": {
     "build": "turbo build",

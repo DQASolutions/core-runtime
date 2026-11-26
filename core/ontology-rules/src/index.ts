@@ -12,7 +12,7 @@ export {
   type Finding,
   type RuleVerdict,
 } from './fn.js'
-export { loadFunctions, loadRuleStore, rulesByTypeFromIR, groupRulesByType, mergeRulesByType, overrideLast, type RulesByType } from './load-functions.js'
+export { rulesByTypeFromIR, groupRulesByType, mergeRulesByType, overrideLast, type RulesByType } from './rules-by-type.js'
 export {
   // CORE OPERATIONS — the closed primitive basis (guarded-FO + aggregation) every
   // rule composes from. See core-ops.ts for the theory: finite + closed ⇒ never

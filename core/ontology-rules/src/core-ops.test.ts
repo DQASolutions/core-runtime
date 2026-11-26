@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import type { Instance, FunctionIO } from '@dqa-ai-solutions/ontology-sdk'
+import type { Instance, FunctionIO } from '@dqa-ai-solutions/ontology-model'
 import {
   num, text, rel, filter, sum, count, min, max, avg,
   eq, ne, lt, ge, and, or, not, any, all, exists, isEmpty,

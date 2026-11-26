@@ -1,6 +1,6 @@
 // Non-code files a one-import package re-serves from the packages it gathers: the ontology file
-// schema, conformance cases and the rule registry's SQL migrations (core-runtime), the theme
-// stylesheets (app-runtime), the ingested-context JSON Schema (agent-runtime).
+// schema, conformance cases and the rule registry's SQL migrations (ontology-runtime), the theme
+// stylesheets (ui-runtime), the ingested-context JSON Schema (agent-runtime).
 // Run from the package directory: `node ../../scripts/copy-assets.mjs <package>`.
 import { cpSync, existsSync, mkdirSync } from 'node:fs'
 import { dirname, join } from 'node:path'
@@ -18,13 +18,15 @@ const COPIES = {
   'core-runtime': [
     ['@dqa-ai-solutions/ontology-base', 'schema', 'dist/ontology-base/schema'],
     ['@dqa-ai-solutions/ontology-base', 'conformance', 'dist/ontology-base/conformance'],
+  ],
+  'ontology-runtime': [
     ['@dqa-ai-solutions/module-rule-registry', 'migrations', 'dist/rule-registry/migrations'],
   ],
   'agent-runtime': [
     ['@dqa-ai-solutions/ingest-documents', 'schemas', 'dist/ingest-documents/schemas'],
   ],
-  'app-runtime': ['tokens.css', 'tokens.generated.css', 'tokens.dark.css', 'tokens.high.css']
-    .map((f) => ['@dqa-ai-solutions/ui-kit', `dist/${f}`, `dist/ui-kit/${f}`]),
+  'ui-runtime': ['tokens.css', 'tokens.generated.css', 'tokens.dark.css', 'tokens.high.css']
+    .map((f) => ['@dqa-ai-solutions/ui-kit', `dist/${f}`, `dist/${f}`]),
 }
 const which = process.argv[2]
 if (!COPIES[which]) throw new Error(`copy-assets: no assets declared for "${which}"`)
